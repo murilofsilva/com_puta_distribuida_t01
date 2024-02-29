@@ -5,6 +5,7 @@ import models.ConnectionStatus;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.math.BigDecimal;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -36,13 +37,13 @@ public class CreditoService{
         public void run(){
             try(
                     ObjectInputStream inCredito = new ObjectInputStream(socket.getInputStream());
-                    ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())
+                    ObjectOutputStream outCredito = new ObjectOutputStream(socket.getOutputStream())
             ) {
 
-                String requestCredito = (String) inCredito.readObject();
-                System.out.println(requestCredito);
+                BigDecimal valor = (BigDecimal) inCredito.readObject();
+                System.out.println(valor);
 
-                out.writeObject(ConnectionStatus.OK);
+                outCredito.writeObject(ConnectionStatus.OK);
             } catch(Exception e) {
                 e.printStackTrace();
             }

@@ -1,5 +1,6 @@
 import dto.TransactionDto;
 
+import javax.swing.*;
 import javax.xml.bind.ValidationException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -14,31 +15,35 @@ public class FilaCliente {
     private static final int PORTA = 12345;
 
     public static void main(String[] args) {
-        try (Socket socket = new Socket(SERVIDOR_IP, PORTA);
-             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-             Scanner scanner = new Scanner(System.in)
-        ) {
-            int count = 0;
-            while (count < 100) {
+        int count = 0;
+        String[] opcoesOperacoes = {"Credito", "Debito"};
+
+        while (count < 100) {
+            try (Socket socket = new Socket(SERVIDOR_IP, PORTA); ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream()); ObjectInputStream in = new ObjectInputStream(socket.getInputStream())
+
+            ) {
                 count++;
-                System.out.print("Deseja fazer uma operação de débito ou crédito? ");
-                String operation = scanner.nextLine();
-                if (!operation.equalsIgnoreCase("debito") && !operation.equalsIgnoreCase("credito")) {
+
+                int operationIdx = JOptionPane.showOptionDialog(null, "Deseja fazer uma operação de débito ou crédito?", "Ops", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opcoesOperacoes, opcoesOperacoes[0]);
+                String operation = opcoesOperacoes[operationIdx];
+
+                if (!operation.equalsIgnoreCase("credito") && !operation.equalsIgnoreCase("debito")) {
                     throw new ValidationException("Opção inválida!");
                 }
-                System.out.print("Qual o valor da operação? ");
-                BigDecimal value = scanner.nextBigDecimal();
-                scanner.nextLine();
+
+                BigDecimal value = new BigDecimal(JOptionPane.showInputDialog(null, "Qual o valor da operação?", 0));
+
                 TransactionDto dto = buildDto(operation, value);
                 out.writeObject(dto);
-       //         String respostaEnvio = (String) in.readObject();
-      //          System.out.println("Resposta do servidor: " + respostaEnvio);
+
+                TransactionDto res = (TransactionDto) in.readObject();
+                JOptionPane.showMessageDialog(null, "Opa", "Resultado operacao", JOptionPane.ERROR_MESSAGE);
+
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (ValidationException e) {
+                throw new RuntimeException(e);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ValidationException e) {
-            throw new RuntimeException(e);
         }
     }
 

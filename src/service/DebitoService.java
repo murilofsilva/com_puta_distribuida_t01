@@ -1,5 +1,7 @@
 package service;
 
+import models.ConnectionStatus;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
@@ -43,16 +45,8 @@ public class DebitoService{
                 System.out.println(valor);
 
              //   outDebito.writeObject("retorno-debito");
+                outDebito.writeObject(ConnectionStatus.OK);
             } catch(Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        private void sendResponseToQueue() {
-            try (Socket socketDebito = new Socket("localhost", 12345);
-                 ObjectOutputStream outDebito = new ObjectOutputStream(socketDebito.getOutputStream())) {
-                outDebito.writeObject("retorno-debito");
-            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
