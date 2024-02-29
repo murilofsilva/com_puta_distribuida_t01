@@ -1,6 +1,6 @@
 package service;
 
-import models.ConnectionStatus;
+import models.TransactionStatus;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -43,7 +43,7 @@ public class CreditoService{
                 BigDecimal valor = (BigDecimal) inCredito.readObject();
                 System.out.println(valor);
 
-                outCredito.writeObject(ConnectionStatus.OK);
+                outCredito.writeObject(TransactionStatus.OK);
             } catch(Exception e) {
                 e.printStackTrace();
             }

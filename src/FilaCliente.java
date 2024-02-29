@@ -1,4 +1,5 @@
 import dto.TransactionDto;
+import models.TransactionStatus;
 
 import javax.swing.*;
 import javax.xml.bind.ValidationException;
@@ -31,13 +32,21 @@ public class FilaCliente {
                     throw new ValidationException("Opção inválida!");
                 }
 
-                BigDecimal value = new BigDecimal(JOptionPane.showInputDialog(null, "Qual o valor da operação?", 0));
+                BigDecimal value = BigDecimal.ZERO;
+                while(value.compareTo(BigDecimal.ZERO) != 1){
+                    value = new BigDecimal(JOptionPane.showInputDialog(null, "Qual o valor da operação?", 0));
+                }
 
                 TransactionDto dto = buildDto(operation, value);
                 out.writeObject(dto);
 
                 TransactionDto res = (TransactionDto) in.readObject();
-                JOptionPane.showMessageDialog(null, "Opa", "Resultado operacao", JOptionPane.ERROR_MESSAGE);
+                if(res.getStatus().equals(TransactionStatus.ERROR)){
+                    JOptionPane.showMessageDialog(null, "Nao foi possivel completar a operacao","Erro",  JOptionPane.ERROR_MESSAGE);
+                }else{
+                    JOptionPane.showMessageDialog(null, "A operacao foi realizada com sucesso","Sucesso",  JOptionPane.INFORMATION_MESSAGE);
+                }
+
 
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();

@@ -1,6 +1,6 @@
 package models;
 
-public class ConnectionStatus {
+public class TransactionStatus {
     public static final String OK = "OK";
     public static final String ERROR = "ERROR";
 }

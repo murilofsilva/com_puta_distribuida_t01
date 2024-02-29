@@ -1,5 +1,4 @@
 import dto.TransactionDto;
-import models.ConnectionStatus;
 import service.ConnectionService;
 
 import java.io.IOException;
@@ -82,7 +81,7 @@ public class FilaServidor {
 //                    } else if ((mensagem.equalsIgnoreCase("retorno-debito"))) {
 //                        System.out.println("Recebido retorno do servidor de débito");
 //                    }
-                   System.out.println(res);
+                    dto.setStatus(res);
                     out.writeObject(dto);
 
 

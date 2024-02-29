@@ -1,6 +1,6 @@
 package service;
 
-import models.ConnectionStatus;
+import models.TransactionStatus;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -20,7 +20,7 @@ public class ConnectionService {
             return resOp;
         } catch (Exception e) {
             e.printStackTrace();
-            return ConnectionStatus.ERROR;
+            return TransactionStatus.ERROR;
         }
     }
 }

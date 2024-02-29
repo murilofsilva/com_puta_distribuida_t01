@@ -1,9 +1,8 @@
 package service;
 
-import models.ConnectionStatus;
+import models.TransactionStatus;
 
 import java.io.IOException;
-import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
@@ -45,7 +44,7 @@ public class DebitoService{
                 System.out.println(valor);
 
              //   outDebito.writeObject("retorno-debito");
-                outDebito.writeObject(ConnectionStatus.OK);
+                outDebito.writeObject(TransactionStatus.OK);
             } catch(Exception e) {
                 e.printStackTrace();
             }
