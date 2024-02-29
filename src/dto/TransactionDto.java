@@ -1,7 +1,5 @@
 package dto;
 
-import models.TransactionStatus;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -15,6 +13,8 @@ public class TransactionDto implements Serializable {
 
     private String status;
 
+    private String usuarioOperacao;
+
     public String getQueue() {
         return this.queue;
     }
@@ -25,6 +25,10 @@ public class TransactionDto implements Serializable {
 
     public BigDecimal getValue() {
         return this.value;
+    }
+
+    public String getUsuarioOperacao() {
+        return this.usuarioOperacao;
     }
 
     public void setQueue(String name) {
@@ -45,5 +49,9 @@ public class TransactionDto implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public void setUsuarioOperacao(String user) {
+        this.usuarioOperacao = user;
     }
 }

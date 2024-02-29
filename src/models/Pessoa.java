@@ -47,7 +47,7 @@ public class Pessoa {
         this.contaCredito = valor;
     }
 
-    public List<Pessoa> getDefaultPersons() {
+    public static List<Pessoa> getDefaultPersons() {
         return Arrays.asList(new Pessoa(1L, "Murilo"),
                 new Pessoa(2L, "Ludio"),
                 new Pessoa(3L, "Neymar Jr"));

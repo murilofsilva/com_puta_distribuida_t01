@@ -9,14 +9,6 @@ import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-//class RequestItem{
-//    Socket clienteSocket;
-//    String mensagemReq;
-//    public RequestItem(Socket clienteSocket, String mensagemReq){
-//        this.clienteSocket = clienteSocket;
-//        this.mensagemReq = mensagemReq;
-//    }
-//}
 public class FilaServidor {
 
     private static final int PORTA = 12345;
@@ -34,24 +26,25 @@ public class FilaServidor {
             while (true) {
                 Socket socketCliente = serverSocket.accept();
                 fila.offer(socketCliente);
-                if(!queueAttendentThread.isAlive()){
+                if (!queueAttendentThread.isAlive()) {
                     queueAttendentThread = new Thread(new QueueAttendent());
                     queueAttendentThread.start();
                 }
-//                new Thread(new ClienteHandler(socketCliente)).start();
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    private static class QueueAttendent implements Runnable{
-        public void run(){
-            while(!fila.isEmpty()){
+
+    private static class QueueAttendent implements Runnable {
+        public void run() {
+            while (!fila.isEmpty()) {
                 new Thread(new ClienteHandler(fila.poll())).start();
             }
         }
     }
+
     private static class ClienteHandler implements Runnable {
         private Socket socket;
 
@@ -67,57 +60,21 @@ public class FilaServidor {
             ) {
                 ConnectionService connectionService = new ConnectionService();
 
-                    TransactionDto dto = (TransactionDto) in.readObject();
-                    String res = "";
+                TransactionDto dto = (TransactionDto) in.readObject();
+                String res = "";
 
-                    if (dto.getQueue().equalsIgnoreCase("debito")) {
-                        res = connectionService.sendRequestToServer(PORTA_SERVIDOR_DEBITO, dto.getValue());
-                    }
-                    if (dto.getQueue().equalsIgnoreCase("credito")) {
-                        res = connectionService.sendRequestToServer(PORTA_SERVIDOR_CREDITO, dto.getValue());
-                    }
-//                    } else if ((mensagem.equalsIgnoreCase("retorno-credito"))) {
-//                        //fazer a lógica de rotorno do servidor de crédito
-//                    } else if ((mensagem.equalsIgnoreCase("retorno-debito"))) {
-//                        System.out.println("Recebido retorno do servidor de débito");
-//                    }
-                    dto.setStatus(res);
-                    out.writeObject(dto);
-
+                if (dto.getQueue().equalsIgnoreCase("debito")) {
+                    res = connectionService.sendRequestToServer(PORTA_SERVIDOR_DEBITO, dto);
+                }
+                if (dto.getQueue().equalsIgnoreCase("credito")) {
+                    res = connectionService.sendRequestToServer(PORTA_SERVIDOR_CREDITO, dto);
+                }
+                dto.setStatus(res);
+                out.writeObject(dto);
 
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
-
-//        private String sendCredito() {
-//            try (
-//                    Socket socketCredito = new Socket("localhost", 12346);
-//                    ObjectOutputStream outCredito = new ObjectOutputStream(socketCredito.getOutputStream());
-//                    ObjectInputStream inCredito = new ObjectInputStream(socketCredito.getInputStream());
-//            ) {
-//                String mensagemDaFila = fila.poll();
-//                outCredito.writeObject("Requisição para o servidor de crédito: " + mensagemDaFila);
-//                String resOp = (String) inCredito.readObject();
-//                return resOp;
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                return ConnectionStatus.ERROR;
-//            }
-//        }
-//
-//        private String sendDebito() {
-//            try (Socket socketDebito = new Socket("localhost", 12347);
-//                 ObjectOutputStream outDebito = new ObjectOutputStream(socketDebito.getOutputStream());
-//                 ObjectInputStream inDebito = new ObjectInputStream(socketDebito.getInputStream())) {
-//                String mensagemDaFila = fila.poll();
-//                outDebito.writeObject("Requisição para o servidor de débito: " + mensagemDaFila);
-//                String resOp = (String) inDebito.readObject();
-//                return resOp;
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                return ConnectionStatus.ERROR;
-//            }
-//        }
     }
 }

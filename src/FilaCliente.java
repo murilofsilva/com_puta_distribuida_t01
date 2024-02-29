@@ -8,7 +8,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class FilaCliente {
 
@@ -18,6 +17,7 @@ public class FilaCliente {
     public static void main(String[] args) {
         int count = 0;
         String[] opcoesOperacoes = {"Credito", "Debito"};
+        String[] opcoesUsuarios = {"Murilo", "Ludio"};
 
         while (count < 100) {
             try (Socket socket = new Socket(SERVIDOR_IP, PORTA); ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream()); ObjectInputStream in = new ObjectInputStream(socket.getInputStream())
@@ -25,26 +25,29 @@ public class FilaCliente {
             ) {
                 count++;
 
-                int operationIdx = JOptionPane.showOptionDialog(null, "Deseja fazer uma operação de débito ou crédito?", "Ops", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opcoesOperacoes, opcoesOperacoes[0]);
+                int operationIdx = JOptionPane.showOptionDialog(null, "Deseja fazer uma operação de débito ou crédito?", "Escolha uma opção", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opcoesOperacoes, opcoesOperacoes[0]);
                 String operation = opcoesOperacoes[operationIdx];
+
+                int usuarioIdx = JOptionPane.showOptionDialog(null, "Qual o usuário da operação?", "Escolha uma opção", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opcoesUsuarios, opcoesUsuarios[0]);
+                String usuario = opcoesUsuarios[usuarioIdx];
 
                 if (!operation.equalsIgnoreCase("credito") && !operation.equalsIgnoreCase("debito")) {
                     throw new ValidationException("Opção inválida!");
                 }
 
                 BigDecimal value = BigDecimal.ZERO;
-                while(value.compareTo(BigDecimal.ZERO) != 1){
+                while (value.compareTo(BigDecimal.ZERO) != 1) {
                     value = new BigDecimal(JOptionPane.showInputDialog(null, "Qual o valor da operação?", 0));
                 }
 
-                TransactionDto dto = buildDto(operation, value);
+                TransactionDto dto = buildDto(operation, value, usuario);
                 out.writeObject(dto);
 
                 TransactionDto res = (TransactionDto) in.readObject();
-                if(res.getStatus().equals(TransactionStatus.ERROR)){
-                    JOptionPane.showMessageDialog(null, "Nao foi possivel completar a operacao","Erro",  JOptionPane.ERROR_MESSAGE);
-                }else{
-                    JOptionPane.showMessageDialog(null, "A operacao foi realizada com sucesso","Sucesso",  JOptionPane.INFORMATION_MESSAGE);
+                if (res.getStatus().equals(TransactionStatus.ERROR)) {
+                    JOptionPane.showMessageDialog(null, "Nao foi possivel completar a operacao", "Erro", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "A operacao foi realizada com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                 }
 
 
@@ -56,11 +59,12 @@ public class FilaCliente {
         }
     }
 
-    private static TransactionDto buildDto(String operation, BigDecimal value) {
+    private static TransactionDto buildDto(String operation, BigDecimal value, String usuario) {
         TransactionDto dto = new TransactionDto();
         dto.setQueue(operation);
         dto.setOperation(operation);
         dto.setValue(value);
+        dto.setUsuarioOperacao(usuario);
 
         return dto;
     }
